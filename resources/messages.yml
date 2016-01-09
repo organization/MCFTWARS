@@ -1,0 +1,28 @@
+m_version: 1
+
+default-language: "kor"
+
+#(EN) ENGLISH
+eng: true
+eng-default-prefix: "[Server]"
+
+#(KO) KOREAN
+kor: true
+kor-default-prefix: "[전쟁]"
+
+kor-command: "전쟁"
+kor-command-participation: "참여"
+kor-command-spawn: "스폰"
+kor-command-leave: "퇴장"
+kor-command-manage: "관리"
+kor-command-red: "레드팀"
+kor-command-blue: "블루팀"
+
+kor-command-description: "전쟁 명령어"
+kor-command-help: "/전쟁 <참여|퇴장>"
+kor-command-ophelp: "/전쟁 <참여|관리|스폰|퇴장>"
+
+kor-spawn-help: "/전쟁 스폰 <레드팀|블루팀>"
+kor-dont-have-permission: "당신은 이 명령어를 실행할 권한이 없습니다."
+
+kor-success-setspawn: "%team%스폰을 설정했습니다."
