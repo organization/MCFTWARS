@@ -16,7 +16,7 @@ class soldier {
 	public function setTeam($team) {
 		$this->team = $team;
 	}
-	public function getTeam() {
+	public function getTeam($team) {
 		return $this->team;
 	}
 }
