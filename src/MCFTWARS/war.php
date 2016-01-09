@@ -8,6 +8,7 @@ class war {
 	
 	private $plugin, $isplay = false;
 	private $soldiers = array();
+	private $redteam, $blueteam;
 	
 	public function __construct(MCFTWARS $plugin) {
 		$this->plugin = $plugin;
@@ -21,5 +22,8 @@ class war {
 	}
 	public function participate(Player $player) {
 		
+	}
+	public function isPlay() {
+		return $this->isplay;
 	}
 }
