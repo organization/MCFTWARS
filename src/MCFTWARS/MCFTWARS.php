@@ -19,8 +19,6 @@ class MCFTWARS extends PluginBase implements Listener {
 	private $newversion = false;
 	private $war;
 	public function onEnable() {
-		$this->getServer()->getLogger()->error("알수없는 오류가 발생해 플러그인을 종료합니다.");
-		$this->getServer()->getPluginManager()->disablePlugin($this);
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
