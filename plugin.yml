@@ -1,5 +1,5 @@
-name: Itemcase
-main: Itemcase\Itemcase
+name: MCFTWARS
+main: MCFTWARS\MCFTWARS
 version: "1.0"
 author: maru
 api:
@@ -8,6 +8,6 @@ api:
 - 2.0.0
 
 permissions:
- itemcase.command.allow:
-  descript: "itemcase command permission"
-  default: OP
+ mcftwars.command.allow:
+  descript: "example permission"
+  default: true
