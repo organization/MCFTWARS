@@ -14,16 +14,18 @@ kor-command: "전쟁"
 kor-command-participation: "참여"
 kor-command-spawn: "스폰"
 kor-command-leave: "퇴장"
-kor-command-manage: "관리"
 kor-command-red: "레드팀"
 kor-command-blue: "블루팀"
 
 kor-command-description: "전쟁 명령어"
 kor-command-help: "/전쟁 <참여|퇴장>"
-kor-command-ophelp: "/전쟁 <참여|관리|스폰|퇴장>"
+kor-command-ophelp: "/전쟁 <참여|스폰|퇴장>"
 
 kor-spawn-help: "/전쟁 스폰 <레드팀|블루팀>"
+
 kor-dont-have-permission: "당신은 이 명령어를 실행할 권한이 없습니다."
+kor-you-dont-participate: "당신은 전쟁에 참여중이 아닙니다."
 
 kor-success-setspawn: "%team%스폰을 설정했습니다."
 kor-success-participate: "전쟁에 참여하였습니다! 당신은 %team% 입니다."
+kor-leave-from-war: "전쟁에서 퇴장하였습니다."

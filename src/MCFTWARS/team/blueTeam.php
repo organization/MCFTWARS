@@ -2,8 +2,6 @@
 namespace MCFTWARS\team;
 
 use pocketmine\level\Position;
-use pocketmine\Player;
-use MCFTWARS\soldier;
 class blueTeam implements Team {
 	
 	public $soldiers = array();

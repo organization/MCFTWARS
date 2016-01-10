@@ -35,15 +35,35 @@ class war {
 	/**
 	 * 
 	 * @param Player|string $player
-	 * @return soldier
+	 * @return soldier|null
 	 */
 	public function getSoldier($player) {
 		if(!$player instanceof Player) {
 			$player = $this->plugin->getServer()->getPlayer($player);
 		}
-		return $this->soldiers[$player->getName()];
+		if(isset($this->soldiers[$player->getName()])) {
+			return $this->soldiers[$player->getName()];
+		} else {
+			return null;
+		}
 	}
 	public function getSoldiers() {
 		return $this->soldiers;
+	}
+	/**
+	 * 
+	 * @param Player|string $player
+	 * @return boolean
+	 */
+	public function leaveWar($player) {
+		if(!$player instanceof Player) {
+			$player = $this->plugin->getServer()->getPlayer($player);
+		}
+		if ($this->getSoldier($player) == null) {
+			return false;
+		} else {
+			unset($this->soldiers[$player->getName()]);
+		}
+		return true;
 	}
 }

@@ -19,13 +19,18 @@ class MCFTWARS extends PluginBase implements Listener {
 	private $newversion = false;
 	private $war;
 	public function onEnable() {
+		return $this->disablePlugin ();
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
 		$this->registerCommand ( $this->get ( "command" ), "mcftwars.command.allow", $this->get ( "command-description" ), $this->get ( "command-help" ) );
 		$this->getServer ()->getPluginManager ()->registerEvents ( $this, $this );
 		// $this->getServer ()->getScheduler ()->scheduleRepeatingTask ( new ExampleTask( $this ), 12000 );
-		$this->war = new war($this);
+		$this->war = new war ( $this );
+	}
+	public function disablePlugin() {
+		$this->getServer ()->getLogger ()->error ( "알수없는 오류가 발생해 플러그인을 비활성화 합니다." );
+		$this->getServer ()->getPluginManager ()->disablePlugin ( $this );
 	}
 	public function registerCommand($name, $permission, $description = "", $usage = "") {
 		$commandMap = $this->getServer ()->getCommandMap ();
@@ -121,8 +126,8 @@ class MCFTWARS extends PluginBase implements Listener {
 			}
 			switch (strtolower ( $args [0] )) {
 				case $this->get ( "command-participation" ) :
-					$this->war->participate($sender);
-					$this->alert($sender, str_replace("%team%", $this->war->getSoldier($sender)->getTeam()->getTeamName(), $this->get("success-participate")));
+					$this->war->participate ( $sender );
+					$this->alert ( $sender, str_replace ( "%team%", $this->war->getSoldier ( $sender )->getTeam ()->getTeamName (), $this->get ( "success-participate" ) ) );
 					break;
 				case $this->get ( "command-spawn" ) :
 					if (! $sender->isOp ()) {
@@ -136,19 +141,30 @@ class MCFTWARS extends PluginBase implements Listener {
 					$pos = new Position ( $sender->getX (), $sender->getY (), $sender->getZ (), $sender->getLevel () );
 					switch (strtolower ( $args [1] )) {
 						case $this->get ( "command-red" ) :
-							$this->war->redteam->setSpawnPoint($pos);
-							$this->message($sender, str_replace("%team%", $args[1], $this->get("success-setspawn")));
+							$this->war->redteam->setSpawnPoint ( $pos );
+							$this->message ( $sender, str_replace ( "%team%", $args [1], $this->get ( "success-setspawn" ) ) );
 							break;
-						case $this->get("command-blue") :
-							$this->war->blueteam->setSpawnPoint($pos);
-							$this->message($sender, str_replace("%team%", $args[1], $this->get("success-setspawn")));
+						case $this->get ( "command-blue" ) :
+							$this->war->blueteam->setSpawnPoint ( $pos );
+							$this->message ( $sender, str_replace ( "%team%", $args [1], $this->get ( "success-setspawn" ) ) );
 							break;
 						default :
-							$this->alert($sender, $this->get("spawn-help"));
+							$this->alert ( $sender, $this->get ( "spawn-help" ) );
+					}
+					break;
+				case $this->get ( "command-leave" ) :
+					if ($this->war->leaveWar ( $sender )) {
+						$this->message ( $sender, $this->get ( "leave-from-war" ) );
+					} else {
+						$this->alert ( $sender, $this->get ( "you-dont-participate" ) );
 					}
 					break;
 				default :
-					// TODO - 잘못된 명령어 입력시 도움말 표시
+					if ($sender->isOp ()) {
+						$this->alert ( $sender, $this->get ( "command-ophelp" ) );
+					} else {
+						$this->alert ( $sender, $this->get ( "command-help" ) );
+					}
 					break;
 			}
 		}
