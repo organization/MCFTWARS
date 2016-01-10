@@ -19,8 +19,6 @@ class MCFTWARS extends PluginBase implements Listener {
 	private $newversion = false;
 	private $war;
 	public function onEnable() {
-		$this->getServer()->getLogger()->error("알수없는 오류가 발생해 플러그인을 종료합니다.");
-		$this->getServer()->getPluginManager()->disablePlugin($this);
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
@@ -123,7 +121,8 @@ class MCFTWARS extends PluginBase implements Listener {
 			}
 			switch (strtolower ( $args [0] )) {
 				case $this->get ( "command-participation" ) :
-					
+					$this->war->participate($sender);
+					$this->alert($sender, str_replace("%team%", $this->war->getSoldier($sender)->getTeam()->getTeamName(), $this->get("success-participate")));
 					break;
 				case $this->get ( "command-spawn" ) :
 					if (! $sender->isOp ()) {
@@ -137,11 +136,11 @@ class MCFTWARS extends PluginBase implements Listener {
 					$pos = new Position ( $sender->getX (), $sender->getY (), $sender->getZ (), $sender->getLevel () );
 					switch (strtolower ( $args [1] )) {
 						case $this->get ( "command-red" ) :
-							$this->war->setSpawn($pos, "red");
+							$this->war->redteam->setSpawnPoint($pos);
 							$this->message($sender, str_replace("%team%", $args[1], $this->get("success-setspawn")));
 							break;
 						case $this->get("command-blue") :
-							$this->war->setSpawn($pos, "blue");
+							$this->war->blueteam->setSpawnPoint($pos);
 							$this->message($sender, str_replace("%team%", $args[1], $this->get("success-setspawn")));
 							break;
 						default :

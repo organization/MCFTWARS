@@ -26,3 +26,4 @@ kor-spawn-help: "/전쟁 스폰 <레드팀|블루팀>"
 kor-dont-have-permission: "당신은 이 명령어를 실행할 권한이 없습니다."
 
 kor-success-setspawn: "%team%스폰을 설정했습니다."
+kor-success-participate: "전쟁에 참여하였습니다! 당신은 %team% 입니다."

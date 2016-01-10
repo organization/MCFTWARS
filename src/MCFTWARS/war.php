@@ -2,28 +2,48 @@
 
 namespace MCFTWARS;
 
-use pocketmine\level\Position;
 use pocketmine\Player;
+use MCFTWARS\team\redTeam;
+use MCFTWARS\team\blueTeam;
 class war {
 	
 	private $plugin, $isplay = false;
+	public $redteam, $blueteam;
 	private $soldiers = array();
-	private $redteam, $blueteam;
 	
 	public function __construct(MCFTWARS $plugin) {
 		$this->plugin = $plugin;
+		$this->redteam = new redTeam($plugin);
+		$this->blueteam = new blueTeam($plugin);
 	}
 	public function Start() {
 		
 	}
-	public function setSpawn(Position $pos, $team) {
-		$this->plugin->warDB["{$team}-spawn"]["pos"] = $pos->getX().$pos->getY().$pos->getZ();
-		$this->plugin->warDB["{$team}-spawn"]["level"] = $pos->getLevel()->getName();
-	}
 	public function participate(Player $player) {
-		
+		$soldier = new soldier($player);
+		if(mt_rand(0, 1)) {
+			$soldier->setTeam($this->redteam);
+		} else {
+			$soldier->setTeam($this->blueteam);
+		}
+		$player->teleport($soldier->getTeam()->getSpawnPoint());
+		$this->soldiers[$player->getName()] = $soldier;
 	}
 	public function isPlay() {
 		return $this->isplay;
+	}
+	/**
+	 * 
+	 * @param Player|string $player
+	 * @return soldier
+	 */
+	public function getSoldier($player) {
+		if(!$player instanceof Player) {
+			$player = $this->plugin->getServer()->getPlayer($player);
+		}
+		return $this->soldiers[$player->getName()];
+	}
+	public function getSoldiers() {
+		return $this->soldiers;
 	}
 }

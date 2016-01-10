@@ -1,6 +1,16 @@
 <?php
 namespace MCFTWARS\team;
 
+use MCFTWARS;
 class Team {
-	public function getSoldiers();
+	/**
+	 * 
+	 * @var \MCFTWARS\MCFTWARS
+	 */
+	public $plugin;
+	
+	public function __construct(MCFTWARS $plugin) {
+		$this->plugin = $plugin;
+	}
+	public function getTeamName();
 }
