@@ -8,22 +8,20 @@ eng-default-prefix: "[Server]"
 
 #(KO) KOREAN
 kor: true
-kor-default-prefix: "[전쟁]"
+kor-default-prefix: "[아이템케이스]"
+kor-command: "아이템케이스"
+kor-command-add: "추가"
+kor-command-delete: "제거"
+kor-command-reset: "초기화"
 
-kor-command: "전쟁"
-kor-command-participation: "참여"
-kor-command-spawn: "스폰"
-kor-command-leave: "퇴장"
-kor-command-manage: "관리"
-kor-command-red: "레드팀"
-kor-command-blue: "블루팀"
+kor-command-description: "아이템케이스를 설치합니다."
+kor-command-help: "/아이템케이스 <추가|제거|초기화>"
+kor-add-help: "/아이템케이스 추가 <아이템번호>"
 
-kor-command-description: "전쟁 명령어"
-kor-command-help: "/전쟁 <참여|퇴장>"
-kor-command-ophelp: "/전쟁 <참여|관리|스폰|퇴장>"
+kor-touch-createblock: "아이템케이스를 설치할 곳을 터치하세요."
+kor-touch-deleteblock: "삭제할 아이템케이스를 터치하세요."
+kor-create-success: "아이템케이스가 생성되었습니다."
+kor-delete-success: "아이템케이스를 삭제했습니다."
+kor-reset-success: "모든 아이템케이스를 삭제했습니다."
 
-kor-spawn-help: "/전쟁 스폰 <레드팀|블루팀>"
-kor-dont-have-permission: "당신은 이 명령어를 실행할 권한이 없습니다."
-
-kor-success-setspawn: "%team%스폰을 설정했습니다."
-kor-success-participate: "전쟁에 참여하였습니다! 당신은 %team% 입니다."
+kor-item-not-number: "아이템번호는 숫자만 입력 가능합니다."
