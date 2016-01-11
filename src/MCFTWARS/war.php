@@ -16,9 +16,6 @@ class war {
 		$this->redteam = new redTeam($plugin);
 		$this->blueteam = new blueTeam($plugin);
 	}
-	public function Start() {
-		
-	}
 	public function participate(Player $player) {
 		$soldier = new soldier($player);
 		if(mt_rand(0, 1)) {

@@ -15,18 +15,21 @@ use pocketmine\level\Position;
 
 class MCFTWARS extends PluginBase implements Listener {
 	private $m_version = 1, $db_version = 1, $plugin_version;
-	public $messages, $warDB, $config;
+	public $messages, $warDB, $config, $itemlist;
 	private $newversion = false;
-	private $war;
+	public $war;
+	private $eventlistener;
 	public function onEnable() {
 		return $this->disablePlugin ();
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
+		$this->itemlist = $this->LoadItemlist();
 		$this->registerCommand ( $this->get ( "command" ), "mcftwars.command.allow", $this->get ( "command-description" ), $this->get ( "command-help" ) );
 		$this->getServer ()->getPluginManager ()->registerEvents ( $this, $this );
 		// $this->getServer ()->getScheduler ()->scheduleRepeatingTask ( new ExampleTask( $this ), 12000 );
 		$this->war = new war ( $this );
+		$this->eventlistener = new EventListener ( $this );
 	}
 	public function disablePlugin() {
 		$this->getServer ()->getLogger ()->error ( "알수없는 오류가 발생해 플러그인을 비활성화 합니다." );
@@ -112,6 +115,10 @@ class MCFTWARS extends PluginBase implements Listener {
 	public function LoadConfig() {
 		$this->saveResource ( "config.yml" );
 		$this->config = (new Config ( $this->getDataFolder () . "config.yml", Config::YAML ))->getAll ();
+	}
+	public function LoadItemlist() {
+		$this->saveResource("itemlist.yml");
+		$this->itemlist = (new Config($this->getDataFolder()."itemlist.yml", Config::YAML))->getAll();
 	}
 	// ============================================================================
 	public function onCommand(CommandSender $sender, Command $command, $label, Array $args) {
