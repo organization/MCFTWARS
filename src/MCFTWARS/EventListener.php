@@ -8,7 +8,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\Player;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
-use pocketmine\math\Vector3;
 
 class EventListener implements Listener {
 	private $plugin;

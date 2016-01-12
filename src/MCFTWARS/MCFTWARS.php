@@ -133,6 +133,10 @@ class MCFTWARS extends PluginBase implements Listener {
 			}
 			switch (strtolower ( $args [0] )) {
 				case $this->get ( "command-participation" ) :
+					if(!$this->war->isPlay()) {
+						$this->alert($sender, $this->get("not-resume-war"));
+						break;
+					}
 					$this->war->participate ( $sender );
 					$this->alert ( $sender, str_replace ( "%team%", $this->war->getSoldier ( $sender )->getTeam ()->getTeamName (), $this->get ( "success-participate" ) ) );
 					break;
@@ -155,6 +159,9 @@ class MCFTWARS extends PluginBase implements Listener {
 							$this->war->blueteam->setSpawnPoint ( $pos );
 							$this->message ( $sender, str_replace ( "%team%", $args [1], $this->get ( "success-setspawn" ) ) );
 							break;
+						case $this->get("command-lobby") :
+							$this->war->setLobby($pos);
+							$this->message($sender, $this->get("success-setlobby"));
 						default :
 							$this->alert ( $sender, $this->get ( "spawn-help" ) );
 					}
