@@ -3,7 +3,7 @@ namespace MCFTWARS\team;
 
 use MCFTWARS;
 use pocketmine\level\Position;
-class redTeam implements Team {
+class redTeam extends Team {
 	
 	public $soldiers = array();
 	

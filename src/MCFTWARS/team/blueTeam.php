@@ -2,7 +2,7 @@
 namespace MCFTWARS\team;
 
 use pocketmine\level\Position;
-class blueTeam implements Team {
+class blueTeam extends Team {
 	
 	public $soldiers = array();
 	

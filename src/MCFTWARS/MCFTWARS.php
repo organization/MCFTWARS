@@ -7,7 +7,6 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
-use MCFTWARS\task\ExampleTask;
 use pocketmine\command\PluginCommand;
 use pocketmine\command\Command;
 use pocketmine\utils\Utils;
@@ -21,16 +20,17 @@ class MCFTWARS extends PluginBase implements Listener {
 	public $war;
 	private $eventlistener;
 	public function onEnable() {
-		return $this->disablePlugin ();
+		return $this->disablePlugin();
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
+		$this->LoadConfig();
 		$this->itemlist = $this->LoadItemlist();
 		$this->registerCommand ( $this->get ( "command" ), "mcftwars.command.allow", $this->get ( "command-description" ), $this->get ( "command-help" ) );
 		$this->getServer ()->getPluginManager ()->registerEvents ( $this, $this );
 		$this->war = new war ( $this );
 		$this->eventlistener = new EventListener ( $this );
-		$this->getServer()->getScheduler()->scheduleRepeatingTask(new WarStartTask($this), $this->config["war-minute"]*20*60 + $this->config["rest-second"]);
+		$this->getServer()->getScheduler()->scheduleRepeatingTask(new WarStartTask($this), $this->config["war-minute"]*20*60 + $this->config["rest-second"]*20);
 	}
 	public function disablePlugin() {
 		$this->getServer ()->getLogger ()->error ( "알수없는 오류가 발생해 플러그인을 비활성화 합니다." );
