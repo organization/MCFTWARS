@@ -18,18 +18,18 @@ class MCFTWARS extends PluginBase implements Listener {
 	public $messages, $warDB, $config, $itemlist;
 	private $newversion = false;
 	public $war;
-	private $eventlistener;
+	public $eventlistener;
 	public function onEnable() {
 		return $this->disablePlugin();
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
 		$this->LoadConfig();
-		$this->itemlist = $this->LoadItemlist();
+		$this->LoadItemlist();
 		$this->registerCommand ( $this->get ( "command" ), "mcftwars.command.allow", $this->get ( "command-description" ), $this->get ( "command-help" ) );
 		$this->getServer ()->getPluginManager ()->registerEvents ( $this, $this );
-		$this->war = new war ( $this );
 		$this->eventlistener = new EventListener ( $this );
+		$this->war = new war ( $this );
 		$this->getServer()->getScheduler()->scheduleRepeatingTask(new WarStartTask($this), $this->config["war-minute"]*20*60 + $this->config["rest-second"]*20);
 	}
 	public function disablePlugin() {
@@ -138,8 +138,12 @@ class MCFTWARS extends PluginBase implements Listener {
 						$this->alert($sender, $this->get("not-resume-war"));
 						break;
 					}
+					if($this->war->getSoldier($sender) != null) {
+						$this->alert($sender, $this->get("already-participate"));
+						break;
+					}
 					$this->war->participate ( $sender );
-					$this->alert ( $sender, str_replace ( "%team%", $this->war->getSoldier ( $sender )->getTeam ()->getTeamName (), $this->get ( "success-participate" ) ) );
+					$this->message( $sender, str_replace ( "%team%", $this->war->getSoldier ( $sender )->getTeam ()->getTeamName (), $this->get ( "success-participate" ) ) );
 					break;
 				case $this->get ( "command-spawn" ) :
 					if (! $sender->isOp ()) {
@@ -163,6 +167,7 @@ class MCFTWARS extends PluginBase implements Listener {
 						case $this->get("command-lobby") :
 							$this->war->setLobby($pos);
 							$this->message($sender, $this->get("success-setlobby"));
+							break;
 						default :
 							$this->alert ( $sender, $this->get ( "spawn-help" ) );
 					}

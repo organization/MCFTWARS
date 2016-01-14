@@ -9,26 +9,31 @@ use pocketmine\utils\TextFormat;
 use pocketmine\level\Position;
 
 class war {
-	private $plugin, $isplay = false;
+	private $plugin, $isplay = false, $eventlistener;
 	public $redteam, $blueteam;
-	/**
-	 *
-	 * @var soldier
-	 */
 	private $soldiers = [ ];
 	public function __construct(MCFTWARS $plugin) {
 		$this->plugin = $plugin;
 		$this->redteam = new redTeam ( $plugin );
 		$this->blueteam = new blueTeam ( $plugin );
+		$this->eventlistener = $plugin->eventlistener;
 	}
 	public function participate(Player $player) {
 		$soldier = new soldier ( $player );
-		if (count($this->redteam->soldiers) <= count($this->blueteam->soldiers)) {
+		if ($player->isCreative()) {
+			$player->setGamemode(0);
+		}
+		if (count($this->redteam->soldiers) < count($this->blueteam->soldiers)) {
 			$soldier->setTeam ( $this->redteam );
+			$color = TextFormat::RED;
 		} else {
 			$soldier->setTeam ( $this->blueteam );
+			$color = TextFormat::BLUE;
 		}
+		$soldier->getTeam()->soldiers[$player->getName()] = $soldier;
+		$player->setNameTag($color."[{$soldier->getTeam()->getTeamName()}] {$player->getName()}");
 		$player->teleport ( $soldier->getTeam ()->getSpawnPoint () );
+		$this->eventlistener->giveRandomItem($player);
 		$this->soldiers [$player->getName ()] = $soldier;
 	}
 	public function isPlay() {
@@ -64,6 +69,10 @@ class war {
 		if ($this->getSoldier ( $player ) == null) {
 			return false;
 		} else {
+			$this->getSoldier($player)->getPlayer()->teleport($this->getLobby());
+			$player->getInventory()->clearAll();
+			unset($this->eventlistener->touchinfo[$player->getName()]);
+			unset($this->getSoldier($player)->getTeam()->soldiers[$player->getName()]);
 			unset ( $this->soldiers [$player->getName ()] );
 		}
 		return true;
@@ -77,13 +86,12 @@ class war {
 		$this->plugin->getServer ()->broadcastMessage ( TextFormat::DARK_AQUA . $this->plugin->get ( "default-prefix" ) . " " . $this->plugin->get ( "end-war" ) );
 		if (isset($this->soldiers)) {
 			foreach ( $this->soldiers as $soldier ) {
-				$soldier->getPlayer ()->teleport ( $this->getLobby () );
+				$this->leaveWar($soldier->getPlayer());
 			}
-			unset ( $this->soldiers );
 		}
 	}
 	public function setLobby(Position $pos) {
-		$this->plugin->warDB ["spawn"] ["lobby"] ["pos"] = "{$pos->getX()}.{$pos->getY()}.{$pos->getZ()}";
+		$this->plugin->warDB ["spawn"] ["lobby"] ["pos"] = (int)$pos->getX().".".(int)$pos->getY().".".(int)$pos->getZ();
 		$this->plugin->warDB ["spawn"] ["lobby"] ["level"] = $pos->getLevel ()->getName ();
 	}
 	public function getLobby() {

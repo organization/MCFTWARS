@@ -8,10 +8,14 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\Player;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
+use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\utils\TextFormat;
+use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 
 class EventListener implements Listener {
 	private $plugin;
-	private $touchinfo = array ();
+	public $touchinfo = array ();
 	public function __construct(MCFTWARS $plugin) {
 		$this->plugin = $plugin;
 		$plugin->getServer ()->getPluginManager ()->registerEvents ( $this, $plugin );
@@ -39,39 +43,69 @@ class EventListener implements Listener {
 		}
 	}
 	public function onTouch(PlayerInteractEvent $event) {
-		$player = $event->getPlayer();
+		$player = $event->getPlayer ();
 		$block = $event->getBlock ();
-		if ($block->getId () == 54) {
-			$event->setCancelled ();
-			$block = $event->getBlock();
-			if(!isset($this->touchinfo[$player->getName()])) {
-				$this->giveRandomItem($player);
-				array_push($this->touchinfo[$player->getName()], "{$block->getX()}.{$block->getY()}.{$block->getZ()}");
-				$this->plugin->message($player, $this->get("get-item-from-chest"));
-			} else {
-				foreach ($this->touchinfo[$player->getName()] as $stringpos) {
-					if ($stringpos == "{$block->getX()}.{$block->getY()}.{$block->getZ()}") {
-						$this->plugin->alert($player, $this->get("already-get-item"));
-						return true;
+		if ($this->plugin->war->getSoldier ( $player ) != null) {
+			if ($block->getId () == 54) {
+				$event->setCancelled ();
+				$block = $event->getBlock ();
+				if (! isset ( $this->touchinfo [$player->getName ()] )) {
+					$this->giveRandomItem ( $player );
+					$this->touchinfo [$player->getName ()] = [ ];
+					array_push ( $this->touchinfo [$player->getName ()], "{$block->getX()}.{$block->getY()}.{$block->getZ()}" );
+					$this->plugin->message ( $player, $this->plugin->get ( "get-item-from-chest" ) );
+				} else {
+					foreach ( $this->touchinfo [$player->getName ()] as $stringpos ) {
+						if ($stringpos == "{$block->getX()}.{$block->getY()}.{$block->getZ()}") {
+							$this->plugin->alert ( $player, $this->plugin->get ( "already-get-item" ) );
+							return true;
+						}
 					}
+					$this->giveRandomItem ( $player );
+					array_push ( $this->touchinfo [$player->getName ()], "{$block->getX()}.{$block->getY()}.{$block->getZ()}" );
+					$this->plugin->message ( $player, $this->plugin->get ( "get-item-from-chest" ) );
 				}
-				$this->giveRandomItem($player);
-				array_push($this->touchinfo[$player->getName()], "{$block->getX()}.{$block->getY()}.{$block->getZ()}");
-				$this->plugin->message($player, $this->get("get-item-from-chest"));
 			}
 		}
 	}
 	public function giveRandomItem(Player $player) {
-		$inventory = $player->getInventory();
-		$repeat = mt_rand(0, 3);
-		for($i = 0; $i < $repeat; $i++) {
-			$itemid = mt_rand(0, count($this->plugin->itemlist));
-			if($itemid == 262) {
-				$count = mt_rand(3, 10);
+		$inventory = $player->getInventory ();
+		$repeat = mt_rand ( 1, 3 );
+		for($i = 0; $i < $repeat; $i ++) {
+			$itemid = $this->plugin->itemlist ["item"] [mt_rand ( 0, count ( $this->plugin->itemlist ["item"] ) - 1 )];
+			if ($itemid == 262) {
+				$count = mt_rand ( 3, 10 );
 			} else {
 				$count = 1;
 			}
-			$inventory->addItem(Item::get($itemid, 0, $count));
+			$inventory->addItem ( Item::get ( $itemid, 0, $count ) );
 		}
+	}
+	public function onRespawn(PlayerRespawnEvent $event) {
+		$soldier = $this->plugin->war->getSoldier($event->getPlayer());
+		if ($soldier != null) {
+			$event->setRespawnPosition($soldier->getTeam()->getSpawnPoint());
+			if ($soldier->getTeam()->getTeamName() == "레드팀") {
+				$color = TextFormat::RED;
+			} else {
+				$color = TextFormat::BLUE;
+			}
+			$soldier->getPlayer()->setNameTag($color."[{$soldier->getTeam()->getTeamName()}] {$soldier->getPlayer()->getName()}");
+		} else {
+			if (isset($this->plugin->warDB["spawn"]["lobby"]))
+			$event->setRespawnPosition($this->plugin->war->getLobby());
+		}
+	}
+	public function onDeath(PlayerDeathEvent $event) {
+		$player = $event->getEntity()->getPlayer();
+		if($player != null) {
+			if(isset($this->touchinfo[$player->getName()])) {
+				unset($this->touchinfo[$player->getName()]);
+			}
+		}
+	}
+	public function onQuit(PlayerQuitEvent $event) {
+		$player = $event->getPlayer();
+		$this->plugin->war->leaveWar($player);
 	}
 }

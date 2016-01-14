@@ -28,6 +28,7 @@ kor-dont-have-permission: "당신은 이 명령어를 실행할 권한이 없습
 kor-you-dont-participate: "당신은 전쟁에 참여중이 아닙니다."
 kor-already-get-item: "이미 아이템을 얻은 상자입니다."
 kor-not-resume-war: "전쟁이 진행중이 아닙니다."
+kor-already-participate: "이미 참여중입니다."
 
 kor-success-setspawn: "%team% 스폰을 설정했습니다."
 kor-success-setlobby: "로비를 설정했습니다."
