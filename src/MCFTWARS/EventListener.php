@@ -12,6 +12,8 @@ use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\level\Position;
+use MCFTWARS\task\TeleportTask;
 
 class EventListener implements Listener {
 	private $plugin;
@@ -84,16 +86,17 @@ class EventListener implements Listener {
 	public function onRespawn(PlayerRespawnEvent $event) {
 		$soldier = $this->plugin->war->getSoldier($event->getPlayer());
 		if ($soldier != null) {
-			$event->setRespawnPosition($soldier->getTeam()->getSpawnPoint());
 			if ($soldier->getTeam()->getTeamName() == "레드팀") {
 				$color = TextFormat::RED;
 			} else {
 				$color = TextFormat::BLUE;
 			}
 			$soldier->getPlayer()->setNameTag($color."[{$soldier->getTeam()->getTeamName()}] {$soldier->getPlayer()->getName()}");
+			$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $soldier->getPlayer(), $soldier->getTeam()->getSpawnPoint()), 10);
 		} else {
-			if (isset($this->plugin->warDB["spawn"]["lobby"]))
-			$event->setRespawnPosition($this->plugin->war->getLobby());
+			if (isset($this->plugin->warDB["spawn"]["lobby"])){
+				$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $event->getPlayer(), $this->plugin->war->getLobby()), 10);
+			}
 		}
 	}
 	public function onDeath(PlayerDeathEvent $event) {
@@ -107,5 +110,8 @@ class EventListener implements Listener {
 	public function onQuit(PlayerQuitEvent $event) {
 		$player = $event->getPlayer();
 		$this->plugin->war->leaveWar($player);
+	}
+	public function teleport(Player $player, Position $pos) {
+		$player->teleport($pos);
 	}
 }

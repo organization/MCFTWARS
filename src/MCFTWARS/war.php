@@ -65,6 +65,7 @@ class war {
 	public function leaveWar($player) {
 		if (! $player instanceof Player) {
 			$player = $this->plugin->getServer ()->getPlayer ( $player );
+			
 		}
 		if ($this->getSoldier ( $player ) == null) {
 			return false;
