@@ -14,6 +14,7 @@ use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\level\Position;
 use MCFTWARS\task\TeleportTask;
+use ifteam\RankManager\rank\RankProvider;
 
 class EventListener implements Listener {
 	private $plugin;
@@ -84,18 +85,22 @@ class EventListener implements Listener {
 		}
 	}
 	public function onRespawn(PlayerRespawnEvent $event) {
-		$soldier = $this->plugin->war->getSoldier($event->getPlayer());
+		$player = $event->getPlayer();
+		$soldier = $this->plugin->war->getSoldier($player);
 		if ($soldier != null) {
 			if ($soldier->getTeam()->getTeamName() == "레드팀") {
 				$color = TextFormat::RED;
 			} else {
 				$color = TextFormat::BLUE;
 			}
-			$soldier->getPlayer()->setNameTag($color."[{$soldier->getTeam()->getTeamName()}] {$soldier->getPlayer()->getName()}");
-			$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $soldier->getPlayer(), $soldier->getTeam()->getSpawnPoint()), 10);
+			$prefix = $color.$soldier->getTeam()->getTeamName().TextFormat::GOLD;
+			$rank = RankProvider::getInstance()->getRank($player);
+			$rank->addPrefixs([$prefix]);
+			$rank->setPrefix($prefix);
+			$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $player, $soldier->getTeam()->getSpawnPoint()), 10);
 		} else {
 			if (isset($this->plugin->warDB["spawn"]["lobby"])){
-				$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $event->getPlayer(), $this->plugin->war->getLobby()), 10);
+				$this->plugin->getServer()->getScheduler()->scheduleDelayedTask(new TeleportTask($this->plugin, $player, $this->plugin->war->getLobby()), 10);
 			}
 		}
 	}

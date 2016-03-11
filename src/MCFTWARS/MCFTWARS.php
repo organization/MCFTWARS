@@ -20,7 +20,6 @@ class MCFTWARS extends PluginBase implements Listener {
 	public $war;
 	public $eventlistener;
 	public function onEnable() {
-		return $this->disablePlugin();
 		@mkdir ( $this->getDataFolder () );
 		$this->messages = $this->Loadmessage ();
 		$this->warDB = $this->Loadplugindata ( "warDB.json" );
@@ -31,10 +30,6 @@ class MCFTWARS extends PluginBase implements Listener {
 		$this->eventlistener = new EventListener ( $this );
 		$this->war = new war ( $this );
 		$this->getServer()->getScheduler()->scheduleRepeatingTask(new WarStartTask($this), $this->config["war-minute"]*20*60 + $this->config["rest-second"]*20);
-	}
-	public function disablePlugin() {
-		$this->getServer ()->getLogger ()->error ( "알수없는 오류가 발생해 플러그인을 비활성화 합니다." );
-		$this->getServer ()->getPluginManager ()->disablePlugin ( $this );
 	}
 	public function registerCommand($name, $permission, $description = "", $usage = "") {
 		$commandMap = $this->getServer ()->getCommandMap ();

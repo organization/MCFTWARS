@@ -7,6 +7,7 @@ use MCFTWARS\team\redTeam;
 use MCFTWARS\team\blueTeam;
 use pocketmine\utils\TextFormat;
 use pocketmine\level\Position;
+use ifteam\RankManager\rank\RankProvider;
 
 class war {
 	private $plugin, $isplay = false, $eventlistener;
@@ -31,7 +32,10 @@ class war {
 			$color = TextFormat::BLUE;
 		}
 		$soldier->getTeam()->soldiers[$player->getName()] = $soldier;
-		$player->setNameTag($color."[{$soldier->getTeam()->getTeamName()}] {$player->getName()}");
+		$rank = RankProvider::getInstance()->getRank($player);
+		$prefix = $color.$soldier->getTeam()->getTeamName().TextFormat::GOLD;
+		$rank->addPrefixs([$prefix]);
+		$rank->setPrefix($prefix);
 		$player->teleport ( $soldier->getTeam ()->getSpawnPoint () );
 		$this->eventlistener->giveRandomItem($player);
 		$this->soldiers [$player->getName ()] = $soldier;
@@ -65,13 +69,14 @@ class war {
 	public function leaveWar($player) {
 		if (! $player instanceof Player) {
 			$player = $this->plugin->getServer ()->getPlayer ( $player );
-			
 		}
 		if ($this->getSoldier ( $player ) == null) {
 			return false;
 		} else {
 			$this->getSoldier($player)->getPlayer()->teleport($this->getLobby());
 			$player->getInventory()->clearAll();
+			$color = ($this->getSoldier($player)->getTeam()->getTeamName() == "레드팀") ? TextFormat::RED : TextFormat::BLUE;
+			RankProvider::getInstance()->getRank($player)->deletePrefixs([$color.$this->getSoldier($player)->getTeam()->getTeamName().TextFormat::GOLD]);
 			unset($this->eventlistener->touchinfo[$player->getName()]);
 			unset($this->getSoldier($player)->getTeam()->soldiers[$player->getName()]);
 			unset ( $this->soldiers [$player->getName ()] );
